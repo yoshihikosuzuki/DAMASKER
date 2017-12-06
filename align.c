@@ -3308,52 +3308,30 @@ int Print_Alignment(FILE *file, Alignment *align, Work_Data *ework,
 
   Abuf[width] = Bbuf[width] = Dbuf[width] = '\0';
                                            /* buffer/output next column */
-#define COLUMN(x,y)							\
-{ int u, v;								\
-  if (o >= width)							\
-    { fprintf(file,"\n");						\
-      fprintf(file,"%*s",indent,"");					\
-      if (coord > 0)							\
-        { if (sa < aend)						\
-            fprintf(file," %*d",coord,sa);				\
-          else								\
-            fprintf(file," %*s",coord,"");				\
-          fprintf(file," %s\n",Abuf);					\
-          fprintf(file,"%*s %*s %s\n",indent,"",coord,"",Dbuf);		\
-          fprintf(file,"%*s",indent,"");				\
-          if (sb < bend)						\
-            if (comp)							\
-              fprintf(file," %*d",coord,blen-sb);			\
-            else							\
-              fprintf(file," %*d",coord,sb);				\
-          else								\
-            fprintf(file," %*s",coord,"");				\
-          fprintf(file," %s",Bbuf);					\
-        }								\
-      else								\
-        { fprintf(file," %s\n",Abuf);					\
-          fprintf(file,"%*s %s\n",indent,"",Dbuf);			\
-          fprintf(file,"%*s %s",indent,"",Bbuf);			\
-        }								\
-      fprintf(file," %5.1f%%\n",(100.*diff)/(diff+match));		\
-      o  = 0;								\
-      sa = i-1;								\
-      sb = j-1;								\
-      match = diff = 0;							\
-    }									\
-  u = (x);								\
-  v = (y);								\
-  if (u == 4 || v == 4)							\
-    Dbuf[o] = ' ';							\
-  else if (u == v)							\
-    Dbuf[o] = mtag;							\
-  else									\
-    Dbuf[o] = dtag;							\
-  Abuf[o] = N2A[u];							\
-  Bbuf[o] = N2A[v];							\
-  o += 1;								\
-}
-
+#define COLUMN(x,y)                                                     \
+  { int u, v;                                                           \
+	  if (o >= width) {													\
+		  fprintf(file,"%s\n",Abuf);									\
+		  fprintf(file,"%s\n",Dbuf);									\
+		  fprintf(file,"%s\n",Bbuf);									\
+		  o  = 0;														\
+		  sa = i-1;														\
+		  sb = j-1;														\
+		  match = diff = 0;												\
+	  }																	\
+	  u = (x);															\
+	  v = (y);															\
+	  if (u == 4 || v == 4)												\
+		  Dbuf[o] = ' ';												\
+	  else if (u == v)													\
+		  Dbuf[o] = mtag;												\
+	  else																\
+		  Dbuf[o] = dtag;												\
+	  Abuf[o] = N2A[u];													\
+	  Bbuf[o] = N2A[v];													\
+	  o += 1;															\
+  }
+  
   a = align->aseq - 1;
   b = align->bseq - 1;
 
@@ -3478,34 +3456,9 @@ int Print_Alignment(FILE *file, Alignment *align, Work_Data *ework,
 
   /* Print remainder of buffered col.s */
 
-  fprintf(file,"\n");
-  fprintf(file,"%*s",indent,"");
-  if (coord > 0)
-    { if (sa < aend)
-        fprintf(file," %*d",coord,sa);
-      else
-        fprintf(file," %*s",coord,"");
-      fprintf(file," %.*s\n",o,Abuf);
-      fprintf(file,"%*s %*s %.*s\n",indent,"",coord,"",o,Dbuf);
-      fprintf(file,"%*s",indent,"");
-      if (sb < bend)
-        if (comp)
-          fprintf(file," %*d",coord,blen-sb);
-        else
-          fprintf(file," %*d",coord,sb);
-      else
-        fprintf(file," %*s",coord,"");
-      fprintf(file," %.*s",o,Bbuf);
-    }
-  else
-    { fprintf(file," %.*s\n",o,Abuf);
-      fprintf(file,"%*s %.*s\n",indent,"",o,Dbuf);
-      fprintf(file,"%*s %.*s",indent,"",o,Bbuf);
-    }
-  if (diff+match > 0)
-    fprintf(file," %5.1f%%\n",(100.*diff)/(diff+match));
-  else
-    fprintf(file,"\n");
+  fprintf(file,"%s\n",Abuf);
+  fprintf(file,"%s\n",Dbuf);
+  fprintf(file,"%s",Bbuf);
 
   fflush(file);
   return (0);
