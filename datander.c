@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
         else
           broot = Root(bfile,".db");
 
-        settings = New_Align_Spec( AVE_ERROR, SPACING, bblock->freq);
+        settings = New_Align_Spec( AVE_ERROR, SPACING, bblock->freq, 0);
 
         Match_Self(broot,bblock,settings);
 
