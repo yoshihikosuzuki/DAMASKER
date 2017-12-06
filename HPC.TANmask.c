@@ -343,11 +343,63 @@ int main(int argc, char *argv[])
         fprintf(out,"\n");
       }
 
+	//  Block merges
+
+    if (ONAME != NULL)
+      { fclose(out);
+        sprintf(name,"%s.03.MERGE",ONAME);
+        out = fopen(name,"w");
+      }
+
+	fprintf(out,"# Merge jobs (%d)\n",(lblock-fblock+1));
+
+#ifdef LSF
+	jobid = 1;
+#endif
+	fprintf(out,"LAmerge ");
+	if (VON)
+	  fprintf(out,"-v ");
+	fprintf(out,"TAN.%s",root);
+	for (i = fblock; i <= lblock; i++)
+	{ fprintf(out," ");
+      fprintf(out,"TAN.%s.%d",root,i);
+	}
+	
+#ifdef LSF
+	fprintf(out,"\"");
+#endif
+	fprintf(out,"\n");
+
+    //  Check .las (option)
+
+    if (ONAME != NULL)
+      { fclose(out);
+        sprintf(name,"%s.04.CHECK.OPT",ONAME);
+        out = fopen(name,"w");
+      }
+
+    fprintf(out,"# Check merged .las file (optional but recommended)\n");
+
+#ifdef LSF
+    jobid = 1;
+#endif
+#ifdef LSF
+    fprintf(out,LSF_CHECK,0,0,jobid++);
+    fprintf(out," \"");
+#endif
+    fprintf(out,"LAcheck -vS");
+    fprintf(out," %s",root);
+    fprintf(out," TAN.%s",root);
+#ifdef LSF
+    fprintf(out,"\"");
+#endif
+    fprintf(out,"\n");
+
     //  Finish with MASKtan
 
     if (ONAME != NULL)
       { fclose(out);
-        sprintf(name,"%s.03.MASK",ONAME);
+        sprintf(name,"%s.05.MASK",ONAME);
         out = fopen(name,"w");
       }
 
@@ -389,7 +441,7 @@ int main(int argc, char *argv[])
 
     if (ONAME != NULL)
       { fclose(out);
-        sprintf(name,"%s.04.RM",ONAME);
+        sprintf(name,"%s.06.RM",ONAME);
         out = fopen(name,"w");
       }
 
