@@ -437,31 +437,50 @@ int main(int argc, char *argv[])
         fprintf(out,"\n");
       }
 
-    //  Clean up
+	// If the DB consists only of a single block, then do nothing because we already have TAN.ROOT.las
+	// Otherwise merge partial las files and delete them after that
+	
+	if (useblock)
+	  {
+			// Generate merged las file
+			
+			if (ONAME != NULL)
+        { fclose(out);
+					sprintf(name,"%s.06.MRG",ONAME);
+					out = fopen(name,"w");
+				}
 
-    if (ONAME != NULL)
-      { fclose(out);
-        sprintf(name,"%s.06.RM",ONAME);
-        out = fopen(name,"w");
-      }
+			fprintf(out,"# Merge all T.las files\n");
 
-    fprintf(out,"# Cleanup all T.las files\n");
+			fprintf(out,"LAmerge TAN.%s.las",root);
+			for (k = fblock; k <= lblock; k++)
+				fprintf(out," TAN.%s.%d.las",root,k);
+			fprintf(out,"\n");
+			
+			//  Clean up
+			
+			if (ONAME != NULL)
+        { fclose(out);
+					sprintf(name,"%s.07.RM",ONAME);
+					out = fopen(name,"w");
+				}
 
-    for (i = fblock; i <= lblock; i += BUNIT)
-      { fprintf(out,"rm");
-        j = i+BUNIT;
-        if (j > lblock+1)
-          j = lblock+1;
-        for (k = i; k < j; k++)
-          if (useblock)
-            fprintf(out," TAN.%s.%d.las",root,k);
-          else
-            fprintf(out," TAN.%s.las",root);
-        fprintf(out,"\n");
-      }
+			fprintf(out,"# Cleanup all T.las files\n");
+			
+			for (i = fblock; i <= lblock; i += BUNIT)
+        {
+					fprintf(out,"rm");
+					j = i+BUNIT;
+					if (j > lblock+1)
+						j = lblock+1;
+					for (k = i; k < j; k++)
+						fprintf(out," TAN.%s.%d.las",root,k);
+					fprintf(out,"\n");
+				}
 
-    if (ONAME != NULL)
-      fclose(out);
+			if (ONAME != NULL)
+				fclose(out);
+	  }
   }
 
   printf("# Once all the .tan masks have been computed for every block\n");
