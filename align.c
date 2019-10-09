@@ -3456,9 +3456,9 @@ int Print_Alignment(FILE *file, Alignment *align, Work_Data *ework,
 
   /* Print remainder of buffered col.s */
 
-  fprintf(file,"%s\n",Abuf);
-  fprintf(file,"%s\n",Dbuf);
-  fprintf(file,"%s",Bbuf);
+  fprintf(file,"%.*s\n",o,Abuf);
+  fprintf(file,"%.*s\n",o,Dbuf);
+  fprintf(file,"%.*s",o,Bbuf);
 
   fflush(file);
   return (0);
