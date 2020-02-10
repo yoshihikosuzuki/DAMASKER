@@ -1,4 +1,4 @@
-DEST_DIR = ~/my_local/bin
+DEST_DIR = ../bin
 
 CFLAGS = -O3 -Wall -Wextra -Wno-unused-result -fno-strict-aliasing
 
